@@ -1,0 +1,22 @@
+color1="\[$(tput setaf 1)\]"
+color2="\[$(tput setaf 2)\]"
+color3="\[$(tput setaf 3)\]"
+color4="\[$(tput setaf 4)\]"
+color5="\[$(tput setaf 5)\]"
+color6="\[$(tput setaf 6)\]"
+color7="\[$(tput setaf 7)\]"
+color8="\[$(tput setaf 8)\]"
+color9="\[$(tput setaf 9)\]"
+
+RESET="\[$(tput sgr0)\]"
+
+echo "${color1}a${reset}"
+echo "${color2}a${reset}"
+echo "${color3}a${reset}"
+echo "${color4}a${reset}"
+echo "${color5}a${reset}"
+echo "${color6}a${reset}"
+echo "${color7}a${reset}"
+echo "${color8}a${reset}"
+echo "${color9}a${reset}"
+
