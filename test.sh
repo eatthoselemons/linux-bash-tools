@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 for((i=16; i<256; i++)); do
     printf "\e[38;5;${i}m%03d" $i;
     printf '\e[0m';
