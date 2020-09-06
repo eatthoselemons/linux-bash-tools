@@ -5,12 +5,24 @@ trap "${trap_msg}" ERR
 #source ~/git/linux-bash-tools/libs/error-handling.shlib
 source ~/git/linux-bash-tools/libs/config.shlib
 
+# converts a string to uppercase and sets the global $uppercase to the modified string
+# usage:
+# toUpper <string or var>
+# example toUpper "string with spaces"
+# variableName=$uppercase
+
 toUpper() {
-  echo "stuff"
+  uppercase=$(echo ${1} | awk '{print toupper($0)}')
 }
 
+# converts a string to lowercase and sets the global $lowercase to the modified string
+# usage:
+# toLower "<string or var>"
+# example toLower "string with spaces"
+# variableName=$lowercase
+
 toLower() {
- echo "stuff"
+  lowercase=$(echo ${1} | awk '{print tolower($0)}')
 }
 
 # installs a package based on the previously stored package manager type
@@ -18,18 +30,17 @@ toLower() {
 # does not take lists of packages yet
 
 packageInstall() {
-  #manager=$(getConfigVar values.cfg packageManager)
   manager=$(getConfigVar ${1} packageManager)
-  echo $manager
   if [[ $manager = "apt" ]]
   then
     sudo apt-get install -y ${2}
+    echo "installing ${2}"
   elif [[ $manager = "yum" ]]
   then
     sudo yum install ${2}
+    echo "installing ${2}"
   elif [[ $manager = "pacman" ]]
   then
-    echo "got to packageInstall" > file
     sudo pacman -S --noconfirm "${2}"
     echo "installing ${2}"
   fi
