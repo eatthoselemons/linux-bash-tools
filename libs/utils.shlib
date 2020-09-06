@@ -1,0 +1,55 @@
+trap_msg='s=${?}; echo "${0}: Error on line "${LINENO}": ${BASH_COMMAND}"; exit ${s}'    
+set -uo pipefail        
+trap "${trap_msg}" ERR   
+
+#source ~/git/linux-bash-tools/libs/error-handling.shlib
+source ~/git/linux-bash-tools/libs/config.shlib
+
+toUpper() {
+  echo "stuff"
+}
+
+toLower() {
+ echo "stuff"
+}
+
+# installs a package based on the previously stored package manager type
+# usage packageInstall <config file> <package to install>
+# does not take lists of packages yet
+
+packageInstall() {
+  #manager=$(getConfigVar values.cfg packageManager)
+  manager=$(getConfigVar ${1} packageManager)
+  echo $manager
+  if [[ $manager = "apt" ]]
+  then
+    sudo apt-get install -y ${2}
+  elif [[ $manager = "yum" ]]
+  then
+    sudo yum install ${2}
+  elif [[ $manager = "pacman" ]]
+  then
+    echo "got to packageInstall" > file
+    sudo pacman -S --noconfirm "${2}"
+    echo "installing ${2}"
+  fi
+}
+
+# gets the package manager type saves that to a config file
+# usage getPackageManagerType <config file>
+getPackageManagerType() {
+  uname=$(uname -r)
+  aptRegexp="^.*(debian|ubuntu).*$"
+  yumRegexp="^.*(redhat|centos|fedora).*$"
+  pacmanRegexp="^.*(arch).*$"
+  if [[ $uname =~ $aptRegexp ]]
+  then
+    changeConfigVar ${1} packageManager=apt
+  elif [[ $uname =~ $yumRegexp ]]
+  then
+    changeConfigVar ${1} packageManager=yum
+  elif [[ $uname =~ $pacmanRegexp ]]
+  then
+    changeConfigVar ${1} packageManager=pacman
+  fi
+}

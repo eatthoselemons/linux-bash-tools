@@ -1,3 +1,5 @@
+source ~/git/linux-bash-tools/libs/error-handling.shlib
+
 readConfigFile() {
   (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
 }
