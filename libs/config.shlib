@@ -1,0 +1,30 @@
+readConfigFile() {
+  (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
+}
+
+getConfigVar() {
+  val="$(readConfigFile "$PWD/${1}" "${2}")";
+  if [ "${val}" = "__UNDEFINED__" ]
+  then
+    if [[ -f $PWD/${1}.defaults ]]
+    then
+      val="$(configReadFile "$PWD/${1}.defaults" "${2}")";
+    fi
+  fi
+  printf -- "%s" "${val}";
+}
+
+
+changeConfigVar() {
+  variable=`echo ${2} | sed -r 's/^([A-Za-z]*)=.*/\1/g'`
+  if [[ ! -f ${1} ]]
+  then
+    touch "$PWD/${1}"
+  fi
+  if grep -q $variable "$PWD/${1}"
+  then
+    sed -i "s/^$variable=.*$/${2}/g" "$PWD/${1}"
+  else
+    echo "${2}" >> "$PWD/${1}"
+  fi
+}
