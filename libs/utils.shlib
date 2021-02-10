@@ -1,0 +1,66 @@
+trap_msg='s=${?}; echo "${0}: Error on line "${LINENO}": ${BASH_COMMAND}"; exit ${s}'    
+set -uo pipefail        
+trap "${trap_msg}" ERR   
+
+#source ~/git/linux-bash-tools/libs/error-handling.shlib
+source ~/git/linux-bash-tools/libs/config.shlib
+
+# converts a string to uppercase and sets the global $uppercase to the modified string
+# usage:
+# toUpper <string or var>
+# example toUpper "string with spaces"
+# variableName=$uppercase
+
+toUpper() {
+  uppercase=$(echo ${1} | awk '{print toupper($0)}')
+}
+
+# converts a string to lowercase and sets the global $lowercase to the modified string
+# usage:
+# toLower "<string or var>"
+# example toLower "string with spaces"
+# variableName=$lowercase
+
+toLower() {
+  lowercase=$(echo ${1} | awk '{print tolower($0)}')
+}
+
+# installs a package based on the previously stored package manager type
+# usage packageInstall <config file> <package to install>
+# does not take lists of packages yet
+
+packageInstall() {
+  manager=$(getConfigVar ${1} packageManager)
+  if [[ $manager = "apt" ]]
+  then
+    sudo apt-get install -y ${2}
+    echo "installing ${2}"
+  elif [[ $manager = "yum" ]]
+  then
+    sudo yum install ${2}
+    echo "installing ${2}"
+  elif [[ $manager = "pacman" ]]
+  then
+    sudo pacman -S --noconfirm "${2}"
+    echo "installing ${2}"
+  fi
+}
+
+# gets the package manager type saves that to a config file
+# usage getPackageManagerType <config file>
+getPackageManagerType() {
+  uname=$(uname -r)
+  aptRegexp="^.*(debian|ubuntu).*$"
+  yumRegexp="^.*(redhat|centos|fedora).*$"
+  pacmanRegexp="^.*(arch).*$"
+  if [[ $uname =~ $aptRegexp ]]
+  then
+    changeConfigVar ${1} packageManager=apt
+  elif [[ $uname =~ $yumRegexp ]]
+  then
+    changeConfigVar ${1} packageManager=yum
+  elif [[ $uname =~ $pacmanRegexp ]]
+  then
+    changeConfigVar ${1} packageManager=pacman
+  fi
+}
