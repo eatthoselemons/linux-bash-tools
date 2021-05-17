@@ -1,3 +1,7 @@
+# usage: this script then pass in the bash script to run the '.sh' will be
+# striped off automatically
+
+
 scriptName=$(sed 's/\.sh//g' <<< $1)
 echo $scriptName
 echo $1
