@@ -1,5 +1,6 @@
 # usage: this script then pass in the bash script to run the '.sh' will be
 # striped off automatically
+# the directory to the script is the current working directory
 
 
 scriptName=$(sed 's/\.sh//g' <<< $1)
